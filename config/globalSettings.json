@@ -1,0 +1,13 @@
+{
+  "globalSetting": {
+    "name": "ArchiTect",
+    "inviteLink": "https://discord.com/api/oauth2/authorize?client_id=1123005191038447646&permissions=8&scope=bot%20applications.commands",
+    "botID": "1123005191038447646",
+    "lang": "en",
+    "owner": "olus.progr",
+    "co-owner": "gammel",
+    "host": "Kekshosting",
+    "version": "1.9.2",
+    "embedColor": "0xC87A80"
+  }
+}

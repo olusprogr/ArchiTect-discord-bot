@@ -1,0 +1,16 @@
+py-cord
+asyncio
+pillow
+python-dotenv
+PyNaCl
+aiosqlite
+sqlite3
+os
+sys
+easy-pil
+asyncpraw
+psutil
+ffmpeg
+Canvas
+matplotlib
+requests
