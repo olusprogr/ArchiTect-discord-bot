@@ -1,5 +1,7 @@
+import asyncio
+
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.commands import slash_command
 
 from database._databaseManager import *
@@ -11,6 +13,8 @@ import json
 class Botinfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.minOnRuntime = 0
+        self.bot.loop.create_task(self.min_counter())
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
@@ -25,16 +29,31 @@ class Botinfo(commands.Cog):
             self.owner = self.globalSettings["owner"]
             self.co_owner = self.globalSettings["co-owner"]
 
+    async def min_counter(self):
+        while True:
+            self.minOnRuntime += 1
+            await asyncio.sleep(60)
+
     @slash_command(description="Shows you usefull information about the bot")
     @commands.cooldown(1, 10, commands.BucketType.channel)
     async def bot(self, ctx):
+        await ctx.defer()
         asw = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
-
         file_path = 'AchiTect dev'
 
         if os.path.exists(file_path):
             file_size = os.path.getsize(file_path)
             print(f'Die Datei {file_path} ist {file_size} Bytes groß.')
+
+        value = 'minutes'
+        if self.minOnRuntime >= 60:
+            convertedTime = self.minOnRuntime / 60  # to hours
+            value = 'hours'
+            if convertedTime >= 24:
+                convertedTime /= 24  # to days
+                value = 'days'
+        else:
+            convertedTime = self.minOnRuntime
 
         if asw:
             embed = discord.Embed(color=0xC87A80, title=":information_source: BOT INFORMATION :information_source:")
@@ -46,7 +65,9 @@ class Botinfo(commands.Cog):
             embed.add_field(name="Commands: ", value=len(self.bot.commands))
             embed.add_field(name="Lines of code: ", value="2500")
             embed.add_field(name="File size (DB included): ", value="51,6 MB")
-            await ctx.respond(embed=embed)
+            embed.add_field(name="Bot Runtime: ", value=f"{round(convertedTime, 2)} {value}")
+            if ctx.interaction:
+                await ctx.respond(embed=embed)
 
     @bot.error
     async def bot_error(self, ctx, error):
@@ -65,7 +86,7 @@ class Botinfo(commands.Cog):
             embed.description = "An error occurred while processing your request. Please try again later."
 
         else:
-            embed.description = "An unknown error occurred."
+            embed.description = "An unknown error occurred.", error
 
         await ctx.respond(embed=embed, ephemeral=True, delete_after=15)
 
