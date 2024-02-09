@@ -53,8 +53,10 @@ class Say(commands.Cog):
 
         asw = self.check.checkForPremium(ctx.author.id, "user")
         if asw:
+            await ctx.respond("Here you go", ephemeral=True, delete_after=3)
             if "@" in text: text = text.replace("@", "a")
-            await channel.respond(text)
+            await channel.send(text)
+            print(text)
         else: await ctx.respond("You don't own the ArchiTect premium version!", ephemeral=True, delete_after=5)
 
     @say.error
