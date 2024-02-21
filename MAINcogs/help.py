@@ -28,16 +28,15 @@ class Help(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
     @slash_command(description="Get some help commands")
     @commands.cooldown(1, 20, commands.BucketType.user)
     async def help(self, ctx):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
-        await ctx.respond(embed=mainEmbed, view=LinkButtonView())
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
+        if registerOperation: await ctx.respond(embed=mainEmbed, view=LinkButtonView())
 
     @help.error
     async def help_error(self, ctx, error):

@@ -15,8 +15,7 @@ class Greet(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
@@ -25,7 +24,7 @@ class Greet(commands.Cog):
     async def greet(self, ctx,
                     user: Option(discord.User, "The user you want to greet")):
 
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{user}")
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{user}")
 
         greetings = [
             f"Hi {user.mention}! 👋",
@@ -39,7 +38,7 @@ class Greet(commands.Cog):
             f"Salutations {user.mention}! 🌍"
         ]
 
-        await ctx.respond(random.choice(greetings))
+        if registerOperation: await ctx.respond(random.choice(greetings))
 
     @greet.error
     async def greet_error(self, ctx, error):

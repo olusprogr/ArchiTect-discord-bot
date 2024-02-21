@@ -16,8 +16,7 @@ class cs_map(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
@@ -28,7 +27,7 @@ class cs_map(commands.Cog):
     async def cs_callout(self, ctx,
                        maps: Option(str, choices=["Dust2", "Train", "Mirage", "Overpass", "Inferno", "Ancient", "Anubis", "Vertigo", "Nuke", "Cobblestone", "Cache", "Italy"],
                                     description="Select a CS map.")):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{maps}")
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{maps}")
 
         map_info = {
             "Dust2": "https://media.discordapp.net/attachments/1133351096371380224/1133351306602487938/Dust_2.png?width=671&height=671",
@@ -66,7 +65,7 @@ class cs_map(commands.Cog):
             await ctx.send(embed=embed_lower)
         else:
             embed.set_image(url=map_info.get(maps, ""))
-            await ctx.respond(embed=embed)
+            if registerOperation: await ctx.respond(embed=embed)
 
     @cs_callout.error
     async def give_cs_callout_error(self, ctx, error):
