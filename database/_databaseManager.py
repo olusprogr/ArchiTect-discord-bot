@@ -7,7 +7,7 @@ class Database:
     db = None
     c = None
 
-    def __init__(self, file):
+    def __init__(self, file: str):
         self.db = sqlite3.connect(file)
         self.c = self.db.cursor()
 
@@ -25,7 +25,7 @@ class Database:
         return self.c
 
 
-def getCurrentTime():
+def getCurrentTime() -> str:
     t = time.localtime()
     current_time = time.asctime(t)
     return current_time
@@ -36,15 +36,15 @@ class Economy:
     cursor = None
     connection = None
 
-    def __init__(self, database):
+    def __init__(self, database: Database):
         self.connect = database.getConnection()
         self.cursor = database.getCursor()
         self.db = database
 
-    def randomNum(self, a, b):
+    def randomNum(self, a, b) -> int:
         return random.randint(a, b)
 
-    def insertNewColumn(self, table, columnName, dataType):
+    def insertNewColumn(self, table, columnName, dataType) -> None:
         self.cursor.execute(
             f"""
             ALTER TABLE {table}
@@ -52,7 +52,7 @@ class Economy:
             """
         )
 
-    def insertValue(self, author_id):
+    def insertValue(self, author_id: int) -> None:
         self.cursor.execute(
             f"""
             INSERT OR IGNORE INTO users (user_id) VALUES (?)
@@ -66,7 +66,7 @@ class Economy:
         )
         self.db.saveChanges()
 
-    def insertValueIntoCredits(self, table, author_id):
+    def insertValueIntoCredits(self, table: str, author_id: int):
         self.cursor.execute(
             f"""
             INSERT OR IGNORE INTO {table} (user_id) VALUES (?);
@@ -86,14 +86,13 @@ class Economy:
         )
         return aswToReturn, res.fetchone()[0]
 
-    def getUserXP(self, user_id):
+    def getUserXP(self, user_id: int) -> int:
         res = self.cursor.execute(
             f"""
             SELECT xp FROM users WHERE user_id = {user_id}
             """
         )
-        res = res.fetchone()
-        return res
+        return res.fetchone()
 
 
 class Administrator:
@@ -101,12 +100,12 @@ class Administrator:
     cursor = None
     connection = None
 
-    def __init__(self, database):
+    def __init__(self, database: Database):
         self.connect = database.getConnection()
         self.cursor = database.getCursor()
         self.db = database
 
-    def createTable(self, name):
+    def createTable(self, name: str):
         self.cursor.execute(
             f"""
                     CREATE TABLE IF NOT EXISTS {name} (
@@ -118,7 +117,7 @@ class Administrator:
             """
         )
 
-    def get(self, table, list):
+    def get(self, table: str, list=None) -> []:
         res = self.cursor.execute(
             f"""
                 SELECT * FROM {table}
@@ -129,7 +128,7 @@ class Administrator:
             datalist.append(dataset)
         return datalist
 
-    def checkForAdmin(self, user_id, table):
+    def checkForAdmin(self, user_id: int, table: str) -> bool:
         res = self.cursor.execute(
             f"""
             SELECT username FROM {table}
@@ -144,7 +143,7 @@ class Administrator:
             print("User not found")
             return False
 
-    def checkForPremium(self, user_id, table):
+    def checkForPremium(self, user_id: int, table: str) -> bool:
         res = self.cursor.execute(
             f"""
             SELECT username FROM {table}
@@ -159,7 +158,7 @@ class Administrator:
             print("User not found")
             return False
 
-    def write(self, username, user_id, admin, premium):
+    def write(self, username: str, user_id: str, admin: bool, premium: bool) -> None:
         self.cursor.execute(
             f"""
             INSERT INTO user VALUES
@@ -168,7 +167,7 @@ class Administrator:
         )
         self.db.saveChanges()
 
-    def clear_log(self, table):
+    def clear_log(self, table: str):
         self.cursor.execute(
             f"""
             DELETE FROM {table}
@@ -183,12 +182,12 @@ class Log:
     cursor = None
     connection = None
 
-    def __init__(self, database):
+    def __init__(self, database: Database):
         self.connect = database.getConnection()
         self.cursor = database.getCursor()
         self.db = database
 
-    def createTable(self, name):
+    def createTable(self, name: str):
         self.cursor.execute(
             f"""
             CREATE TABLE IF NOT EXISTS {name} (
@@ -201,8 +200,7 @@ class Log:
             """
         )
 
-
-    def log(self, guild, username, command, add_content):
+    def log(self, guild: str, username: str, command: str, add_content = None) -> bool:
         try:
             self.cursor.execute("INSERT INTO log VALUES (?, ?, ?, ?, ?)", (getCurrentTime(), guild, username,
                                                                            command, add_content,))

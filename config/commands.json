@@ -1,0 +1,10 @@
+{
+  "commandConfigs": {
+    "colorOptions": {
+      "Blue": "0x738ADB",
+      "Green": "0x#4ef542",
+      "Yellow": "0x#f5dd42",
+      "Red": "0x#f54242"
+    }
+  }
+}

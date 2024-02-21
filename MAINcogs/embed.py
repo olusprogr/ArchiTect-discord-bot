@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from discord.commands import slash_command
+from discord.commands import slash_command, Option
 
 from database._databaseManager import *
 
@@ -9,23 +9,33 @@ import json
 
 
 class Embed(commands.Cog):
+    colorOptions: list = []
+
     def __init__(self, bot):
         self.bot = bot
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
+            logDB = data["databases"]["savingUserOperations"]
 
-        logDB = data["databases"]["savingUserOperations"]
+        # Latter fixing this bug
+        '''with open('config/commands.json', 'r') as file:
+            data = json.load(file)
+            commandConfigs = data['commandConfigs']
+        
+        self.embedColorsJSON = commandConfigs['colorOptions']
+        colorOptions = list(self.embedColorsJSON.keys())'''
 
         self.log_DB = Log(Database(logDB))
 
     @slash_command(description="Create an embed")
-    @commands.cooldown(1, 10, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def embed(self, ctx):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command))
 
-        modal = TutorialModal(title="Press Enter")
-        await ctx.send_modal(modal)
+        if registerOperation:
+            modal = TutorialModal(title="Press Enter")
+            await ctx.send_modal(modal)
 
     @embed.error
     async def embed_error(self, ctx, error):
@@ -50,6 +60,8 @@ class Embed(commands.Cog):
             embed.description = "An unknown error occurred."
 
         await ctx.respond(embed=embed, ephemeral=True, delete_after=15)
+
+        print(error)
 
 
 def setup(bot):
