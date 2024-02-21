@@ -13,21 +13,20 @@ class Roles(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
     @slash_command(name="roles", description="List every role on the server")
     async def list_roles(self, ctx):
-        asw = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
 
         server_id = ctx.guild.id
         server = self.bot.get_guild(server_id)
         counter = 0
         list = []
 
-        if server is not None and asw:
+        if server is not None and registerOperation:
             roles = sorted(server.roles, key=lambda role: role.position, reverse=True)
             for role in roles:
                 counter += 1

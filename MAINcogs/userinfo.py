@@ -15,17 +15,15 @@ class Userinfo(commands.Cog):
         self.bot = bot
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
-        self.member = None
 
     @slash_command(description="Show every info of the choiced user")
     @commands.cooldown(1, 20, commands.BucketType.user)
     async def userinfo(self, ctx, user: Option(discord.Member, "Select a user", default=None)):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), user)
-        self.member = user or ctx.author
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), user)
+        if user == None: user = ctx.author
 
         await ctx.defer()
 
@@ -66,7 +64,7 @@ class Userinfo(commands.Cog):
         embed.set_footer(
             text=f"Joined on {self.member.joined_at.strftime('%Y-%m-%d %H:%M:%S')} | Account created on {self.member.created_at.strftime('%Y-%m-%d %H:%M:%S')}")
 
-        await ctx.respond(embed=embed)
+        if registerOperation: await ctx.respond(embed=embed)
 
     @userinfo.error
     async def userinfo_error(self, ctx, error):

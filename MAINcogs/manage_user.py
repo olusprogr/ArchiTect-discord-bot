@@ -15,8 +15,7 @@ class manage_user(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
@@ -25,7 +24,7 @@ class manage_user(commands.Cog):
     @discord.default_permissions(ban_members=True)
     async def ban(self, ctx, member: Option(discord.Member, "Wähle einen Member"),
                   reason: Option(str, "Describe the reason for the kick. ", required=False)):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{member}, {reason}")
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{member}, {reason}")
 
         if member.id == ctx.author.id:
             await ctx.respond("You cannot ban yourself", ephemeral=True, delete_after=5)
@@ -34,7 +33,7 @@ class manage_user(commands.Cog):
         else:
             if reason == None:
                 reason = "None provided."
-            await member.ban(reason=reason)
+            if registerOperation: await member.ban(reason=reason)
             await ctx.respond(f"<@{member.id}> has been banned!\n", ephemeral=True, delete_after=3)
 
     @ban.error

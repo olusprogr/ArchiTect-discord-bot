@@ -13,8 +13,7 @@ class serverinfo(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
@@ -22,7 +21,7 @@ class serverinfo(commands.Cog):
     @slash_command(description="Get all the information you need about the server")
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def serverinfo(self, ctx):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
 
         embed = discord.Embed(color=0xC87A80)
         embed.set_thumbnail(url=ctx.guild.icon)
@@ -34,7 +33,7 @@ class serverinfo(commands.Cog):
         embed.add_field(name="💬 Channels", value=len(ctx.guild.channels), inline=True)
         embed.add_field(name="💎 Booster", value=ctx.guild.premium_subscription_count, inline=True)
         embed.set_footer(text="🆔 ID: " + str(ctx.guild.id))
-        await ctx.respond(embed=embed)
+        if registerOperation: await ctx.respond(embed=embed)
 
     @serverinfo.error
     async def serverinfo_error(self, ctx, error):

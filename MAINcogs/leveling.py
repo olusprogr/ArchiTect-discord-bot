@@ -15,8 +15,8 @@ class Rank(commands.Cog):
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
 
-        logDB = data["databases"]["savingUserOperations"]
-        levelDB = data["databases"]["userLevelingSystem"]
+            logDB = data["databases"]["savingUserOperations"]
+            levelDB = data["databases"]["userLevelingSystem"]
 
         self.raw_level_DB = "users"
         self.level_DB = Economy(Database(levelDB))
@@ -40,7 +40,7 @@ class Rank(commands.Cog):
     @slash_command(description="Get your current registered xp and level out from our new set up database.")
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def rank(self, ctx, user: Option(discord.Member, "Select a user", default=None)):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{user}")
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{user}")
         if user is None:
             user = ctx.author
 
@@ -80,7 +80,7 @@ class Rank(commands.Cog):
         )
 
         file = discord.File(fp=background.image_bytes, filename="levelcard.png")
-        await ctx.respond(file=file)
+        if registerOperation: await ctx.respond(file=file)
 
     @rank.error
     async def rank_error(self, ctx, error):

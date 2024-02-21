@@ -13,20 +13,19 @@ class Ping(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
     @slash_command(description="Get the bots ping")
     @commands.cooldown(1, 10, commands.BucketType.channel)
     async def ping(self, ctx):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
 
         embed = discord.Embed(title="🏓PONG/LATENCY🏓", description=f"Client latency: **{round(self.bot.latency, 3)}**s",
                               color=0xC87A80)
         embed.set_footer(text="Issues on discords or the bots sides could create weird or high latency.")
-        await ctx.respond(embed=embed)
+        if registerOperation: await ctx.respond(embed=embed)
 
     @ping.error
     async def bot_error(self, ctx, error):

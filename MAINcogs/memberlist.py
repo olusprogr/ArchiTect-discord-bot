@@ -13,18 +13,17 @@ class Userlist(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
     @slash_command(description="Displays you every sinlge member on the server")
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def memberlist(self, ctx):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
-        members = ctx.guild.members
-        pages = []
-        description = ""
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
+        members: ctx.guild.members = ctx.guild.members
+        pages: [] = []
+        description: str = ""
 
         for index, member in enumerate(members):
             description += f"`{index + 1}.` {member}\n"
@@ -37,7 +36,7 @@ class Userlist(commands.Cog):
                 description = ""
 
         paginator = Paginator(pages=pages, author_check=False)
-        await paginator.respond(ctx.interaction)
+        if registerOperation: await paginator.respond(ctx.interaction)
 
     @memberlist.error
     async def memberlist_error(self, ctx, error):

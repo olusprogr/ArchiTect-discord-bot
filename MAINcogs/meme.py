@@ -15,24 +15,24 @@ class Meme(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
+            logDB = data["databases"]["savingUserOperations"]
 
-        logDB = data["databases"]["savingUserOperations"]
         self.log_DB = Log(Database(logDB))
 
         with open('config/apis/reditt.json', 'r') as file:
             data = json.load(file)
             data = data["redittAPI"]
 
-            self.client_id = data["clientId"]
-            self.client_secret = data["clientSecret"]
-            self.username = data["username"]
-            self.password = data["password"]
+        self.client_id = data["clientId"]
+        self.client_secret = data["clientSecret"]
+        self.username = data["username"]
+        self.password = data["password"]
 
     @slash_command(description="Get a funny trending meme")
     async def meme(self, ctx, topic: Option(str, choices=["ProgrammerHumor", "memes", "Memes_Of_The_Dank", "AnimalMemes"],
                                             description="Available channels to select: ")):
 
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), topic)
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), topic)
 
         await ctx.defer()
         async with asyncpraw.Reddit(
@@ -56,7 +56,7 @@ class Meme(commands.Cog):
             embed = discord.Embed(title=random_post.title, color=discord.Color.blurple())
             embed.set_image(url=random_post.url)
 
-            await ctx.respond(embed=embed)
+            if registerOperation: await ctx.respond(embed=embed)
 
 
 def setup(bot):

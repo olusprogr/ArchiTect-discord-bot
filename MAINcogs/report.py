@@ -13,18 +13,17 @@ class A(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
     @slash_command(description="Report to us")
     @commands.cooldown(1, 3600, commands.BucketType.user)
     async def report(self, ctx):
-        self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
 
         modal = TutorialModal(title="Press Enter")
-        await ctx.send_modal(modal)
+        if registerOperation: await ctx.send_modal(modal)
 
     @report.error
     async def reporterror(self, ctx, error):
