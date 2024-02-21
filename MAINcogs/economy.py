@@ -13,9 +13,8 @@ class UsersEconomy(commands.Cog):
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
-        levelDB = data["databases"]["userLevelingSystem"]
+            logDB = data["databases"]["savingUserOperations"]
+            levelDB = data["databases"]["userLevelingSystem"]
 
         self.economy_DB = Economy(Database(levelDB))
         self.log_DB = Log(Database(logDB))
@@ -23,12 +22,12 @@ class UsersEconomy(commands.Cog):
     @slash_command(description="Claim your daily free credits!")
     @commands.cooldown(1, 86400, commands.BucketType.user)
     async def daily_credits(self, ctx):
-        asw = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
-        asw2 = self.economy_DB.insertValueIntoCredits("users", str(ctx.author.id))
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
+        claimedDailayCredits = self.economy_DB.insertValueIntoCredits("users", str(ctx.author.id))
 
-        if asw and asw2:
-            embed = discord.Embed(title=f"Successfully added {asw2[0]} more credit(s) to your wallet!",
-                                  description=f"Wallet: **{asw2[1]}** credits", color=0xC87A80)
+        if registerOperation and claimedDailayCredits:
+            embed = discord.Embed(title=f"Successfully added {claimedDailayCredits[0]} more credit(s) to your wallet!",
+                                  description=f"Wallet: **{claimedDailayCredits[1]}** credits", color=0xC87A80)
             await ctx.respond(embed=embed, ephemeral=True, delete_after=15)
 
     @daily_credits.error

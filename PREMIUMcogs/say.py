@@ -33,8 +33,8 @@ class Say(commands.Cog):
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
 
-        logDB = data["databases"]["savingUserOperations"]
-        userDB = data["databases"]["preferredUser"]
+            logDB = data["databases"]["savingUserOperations"]
+            userDB = data["databases"]["preferredUser"]
 
         self.check = Administrator(Database(userDB))
         self.log_DB = Log(Database(logDB))
@@ -48,17 +48,17 @@ class Say(commands.Cog):
 
         if channel is None: channel = ctx.channel
         @DatabaseEntryDecorator(self.log_DB)
-        def trigger(*args, **kwargs): pass
+        def trigger(*args, **kwargs) -> None: pass
         trigger(ctx, text, channel)
 
-        asw = self.check.checkForPremium(ctx.author.id, "user")
-        if asw:
+        if self.check.checkForPremium(ctx.author.id, "user"):
             await ctx.respond("Here you go", ephemeral=True, delete_after=3)
             if "@" in text: text = text.replace("@", "a")
             await channel.send(text)
             print(text)
         else: await ctx.respond("You don't own the ArchiTect premium version!", ephemeral=True, delete_after=5)
 
+    # Error handling
     @say.error
     async def say_error(self, ctx, error):
         embed = discord.Embed(color=0xC87A80, title="Error: ")

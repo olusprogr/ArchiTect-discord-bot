@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.commands import slash_command, Option
-from database._databaseManager import Log, Database, Administrator
+from database._databaseManager import *
 import asyncio
 import json
 
@@ -18,6 +18,7 @@ class Spam(commands.Cog):
         userDB = data["databases"]["preferredUser"]
 
         self.check = Administrator(Database(userDB))
+        #self.check = Administrator(Database(userDB))
         self.log_DB = Log(Database(logDB))
 
     @slash_command(description="Spam a word with your personalized parameters")

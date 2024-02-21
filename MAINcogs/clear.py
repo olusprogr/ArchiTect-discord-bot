@@ -25,19 +25,16 @@ class Clear(commands.Cog):
                     channel: Option(discord.TextChannel, required=False)
                     ):
 
-        if channel is None:
-            channel = ctx.channel
-
+        if channel is None: channel = ctx.channel
         await ctx.defer(ephemeral=True)
 
-        out = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{amount}, {channel}")
-        print(out)
-
-        embed = discord.Embed(color=0xC87A80, title="Output:",
-                              description=f"Deleting {amount} messages in channel: {channel}...\n"
-                                          f"Please be patient for a moment.\nThis may take some time.")
-        await ctx.respond(embed=embed, ephemeral=True, delete_after=10)
-        await channel.purge(limit=amount)
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{amount}, {channel}")
+        if registerOperation:
+            embed = discord.Embed(color=0xC87A80, title="Output:",
+                                  description=f"Deleting {amount} messages in channel: {channel}...\n"
+                                              f"Please be patient for a moment.\nThis may take some time.")
+            await ctx.respond(embed=embed, ephemeral=True, delete_after=10)
+            await channel.purge(limit=amount)
 
     @clear.error
     async def clear_error(self, ctx, error):

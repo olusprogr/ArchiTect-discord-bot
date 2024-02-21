@@ -1,20 +1,20 @@
 import discord
 from discord.ext import commands
 from discord.commands import SlashCommandGroup, Option
-import random
 
 from database._databaseManager import *
 
 import json
 
+
 class Password(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?&%$_'
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
-
-        logDB = data["databases"]["savingUserOperations"]
+            logDB = data["databases"]["savingUserOperations"]
 
         self.log_DB = Log(Database(logDB))
 
@@ -26,8 +26,7 @@ class Password(commands.Cog):
     async def password(self, ctx, lenght: Option(int, "Select the lenght of your password", min_value=6, max_value=32)):
         self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{lenght}")
 
-        chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?&%$_'
-        password = ''.join(random.choice(chars) for i in range(lenght))
+        password = ''.join(random.choice(self.chars) for i in range(lenght))
         embed = discord.Embed(color=0xC87A80, title="",
                               description=f"Your password is: ||{password}||")
         await ctx.respond(embed=embed,  delete_after=30, ephemeral=True)

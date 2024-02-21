@@ -13,7 +13,9 @@ import json
 class Botinfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.minOnRuntime = 0
+        self.minOnRuntime: int = 0
+        self.file_path: str = 'AchiTect dev'
+        self.value: str = 'minutes'
         self.bot.loop.create_task(self.min_counter())
 
         with open('config/databases.json', 'r') as file:
@@ -38,36 +40,33 @@ class Botinfo(commands.Cog):
     @commands.cooldown(1, 10, commands.BucketType.channel)
     async def bot(self, ctx):
         await ctx.defer()
-        asw = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
-        file_path = 'AchiTect dev'
+        registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
 
-        if os.path.exists(file_path):
-            file_size = os.path.getsize(file_path)
-            print(f'Die Datei {file_path} ist {file_size} Bytes groß.')
+        def botsOnRunTime() -> tuple[str, int]:
+            if self.minOnRuntime >= 60:
+                convertedTime = self.minOnRuntime / 60  # to hours
+                self.value = 'hours'
+                if convertedTime >= 24:
+                    convertedTime /= 24  # to days
+                    self.value = 'days'
+            else:
+                convertedTime = round(self.minOnRuntime, 2)
 
-        value = 'minutes'
-        if self.minOnRuntime >= 60:
-            convertedTime = self.minOnRuntime / 60  # to hours
-            value = 'hours'
-            if convertedTime >= 24:
-                convertedTime /= 24  # to days
-                value = 'days'
-        else:
-            convertedTime = self.minOnRuntime
+            return self.value, convertedTime
 
-        if asw:
+        if registerOperation:
             embed = discord.Embed(color=0xC87A80, title=":information_source: BOT INFORMATION :information_source:")
             embed.add_field(name="Owner&Co-owner: ", value=f'{self.owner}, {self.co_owner}')
             embed.add_field(name="Staff: ", value="s4mity, levi")
             embed.add_field(name="Bot version: ", value=self.version, inline=True)
             embed.add_field(name="Created: ", value="26. June 2023", inline=True)
-            embed.add_field(name="Servers: ", value=len(self.bot.guilds))
-            embed.add_field(name="Commands: ", value=len(self.bot.commands))
+            embed.add_field(name="Servers: ", value=len(self.bot.guilds).__str__())
+            embed.add_field(name="Commands: ", value=len(self.bot.commands).__str__())
             embed.add_field(name="Lines of code: ", value="2500")
             embed.add_field(name="File size (DB included): ", value="51,6 MB")
-            embed.add_field(name="Bot Runtime: ", value=f"{round(convertedTime, 2)} {value}")
-            if ctx.interaction:
-                await ctx.respond(embed=embed)
+            embed.add_field(name="Bot Runtime: ", value=f"{botsOnRunTime()[1]} {botsOnRunTime()[0]}")
+
+            await ctx.respond(embed=embed)
 
     @bot.error
     async def bot_error(self, ctx, error):
