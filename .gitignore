@@ -4,3 +4,4 @@ venv
 config/apis*
 fixing*
 database/databases
+assets
