@@ -1,0 +1,7 @@
+*.env
+.venv
+*.idea
+config/apis*
+fixing*
+database/databases
+assets

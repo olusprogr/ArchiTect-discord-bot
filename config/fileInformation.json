@@ -1,0 +1,11 @@
+{
+  "fileInformation": {
+    "mainFile": "main.py",
+    "cogTemplate": "maincog.py",
+    "mainCommands": "MAINcogs",
+    "premiumCommands": "PREMIUMcogs",
+    "adminCommands": "ADMINcogs",
+    "additionals": "ADDITIONALS",
+    "debug": "debug"
+  }
+}

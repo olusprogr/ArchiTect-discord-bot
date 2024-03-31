@@ -1,0 +1,7 @@
+{
+  "databases": {
+    "savingUserOperations": "database/databases/log.db",
+    "preferredUser": "database/databases/user.db",
+    "userLevelingSystem": "database/databases/level.db"
+  }
+}
