@@ -59,7 +59,7 @@ class Rank(commands.Cog):
         background.paste(profile, (30, 30))
 
         small_profile_picture = await load_image_async(
-            "https://media.discordapp.net/attachments/1133351096371380224/1200840827405094952/Archtietc.webp?ex=6611792b&is=65ff042b&hm=efd4e3e164892e21150533b33b6be0865b6c7bc53ded52fe9d1ad42b00543085&=&format=webp&width=671&height=671")
+            "https://media.discordapp.net/attachments/1133351096371380224/1200840827405094952/Archtietc.webp?ex=6623ee2b&is=6611792b&hm=fdfccdfcebc87ada15798633abbdad102c1d672ff3480bcf5af232a421802831&=&format=webp&width=671&height=671")
         small_profile = Editor(small_profile_picture).resize((180, 180)).circle_image()
         background.paste(small_profile, (750, 160))
 
