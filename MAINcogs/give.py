@@ -29,6 +29,7 @@ class cs_map(commands.Cog):
             "Cobblestone": "assets/csMaps/maps/Cobblestone.png",
             "Cache": "assets/csMaps/maps/Cache.png",
             "Italy": "assets/csMaps/maps/Italy.png",
+            "District": "assets/csMaps/maps/District.png"
         }
 
         with open('config/databases.json', 'r') as file:
@@ -42,7 +43,7 @@ class cs_map(commands.Cog):
     @give.command(description="Get one of all CS maps callouts")
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def cs_callout(self, ctx,
-                       maps: Option(str, choices=["Dust_2", "Train", "Mirage", "Overpass", "Inferno", "Ancient", "Anubis", "Vertigo", "Nuke", "Cobblestone", "Cache", "Italy"],
+                       maps: Option(str, choices=["Dust_2", "Train", "Mirage", "Overpass", "Inferno", "Ancient", "Anubis", "Vertigo", "Nuke", "Cobblestone", "Cache", "Italy", "District"],
                                     description="Select a CS map.")):
         registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{maps}")
         map_info = self.map_info
