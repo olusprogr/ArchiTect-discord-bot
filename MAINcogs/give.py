@@ -13,6 +13,23 @@ from io import BytesIO
 class cs_map(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.file = None
+        self.map_info = {
+            "Dust_2": "assets/csMaps/maps/Dust_2.png",
+            "Train": "assets/csMaps/maps/Train.png",
+            "Mirage": "assets/csMaps/maps/Mirage.png",
+            "Overpass": "assets/csMaps/maps/Overpass.png",
+            "Inferno": "assets/csMaps/maps/Inferno.png",
+            "Ancient": "assets/csMaps/maps/Ancient.png",
+            "Anubis": "assets/csMaps/maps/Anubis.png",
+            "Vertigo_upper": "assets/csMaps/maps/Vertigo_upper.png",
+            "Vertigo_lower": "assets/csMaps/maps/Vertigo_lower.png",
+            "Nuke_upper": "assets/csMaps/maps/Nuke_upper.png",
+            "Nuke_lower": "assets/csMaps/maps/Nuke_lower.png",
+            "Cobblestone": "assets/csMaps/maps/Cobblestone.png",
+            "Cache": "assets/csMaps/maps/Cache.png",
+            "Italy": "assets/csMaps/maps/Italy.png",
+        }
 
         with open('config/databases.json', 'r') as file:
             data = json.load(file)
@@ -25,47 +42,83 @@ class cs_map(commands.Cog):
     @give.command(description="Get one of all CS maps callouts")
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def cs_callout(self, ctx,
-                       maps: Option(str, choices=["Dust2", "Train", "Mirage", "Overpass", "Inferno", "Ancient", "Anubis", "Vertigo", "Nuke", "Cobblestone", "Cache", "Italy"],
+                       maps: Option(str, choices=["Dust_2", "Train", "Mirage", "Overpass", "Inferno", "Ancient", "Anubis", "Vertigo", "Nuke", "Cobblestone", "Cache", "Italy"],
                                     description="Select a CS map.")):
         registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), f"{maps}")
-
-        map_info = {
-            "Dust2": "https://media.discordapp.net/attachments/1133351096371380224/1133351306602487938/Dust_2.png?width=671&height=671",
-            "Train": "https://media.discordapp.net/attachments/1133351096371380224/1133351307722362890/Train.png",
-            "Mirage": "https://media.discordapp.net/attachments/1133351096371380224/1133351307135172628/Mirage.png?width=671&height=671",
-            "Overpass": "https://media.discordapp.net/attachments/1133351096371380224/1133351307411988530/Overpass.png",
-            "Inferno": "https://media.discordapp.net/attachments/1133351096371380224/1133351306875113563/Inferno.png?width=671&height=671",
-            "Ancient": "https://media.discordapp.net/attachments/1133351096371380224/1135172416184795236/de_ancient_radar.jpg?width=671&height=671",
-            "Anubis": "https://media.discordapp.net/attachments/1133351096371380224/1135172415719219271/de_anubis_radar.jpg?width=671&height=671",
-            "Vertigo_upper": "https://media.discordapp.net/attachments/1133351096371380224/1142435551346184282/de_vertigoUP_radar.jpg?width=671&height=671",
-            "Vertigo_lower": "https://media.discordapp.net/attachments/1133351096371380224/1142438188871319552/de_vertigoDown__radar.jpg?width=671&height=671",
-            "Nuke_upper": "https://media.discordapp.net/attachments/1133351096371380224/1142435459474141284/de_nuke_radar.jpg?width=671&height=671",
-            "Nuke_lower": "https://media.discordapp.net/attachments/1133351096371380224/1142435459805479023/de_nuke2_radar.jpg?width=671&height=671",
-            "Cobblestone": "https://media.discordapp.net/attachments/1133351096371380224/1151846481326780456/cobblestone_85b0d69929.png?width=671&height=671",
-            "Cache": "https://media.discordapp.net/attachments/1133351096371380224/1151846481570045994/cache_5a5bb344bb.png?width=671&height=671",
-            "Italy": "https://media.discordapp.net/attachments/1133351096371380224/1151846482006245438/2348279122_preview_Italy.jpg?width=491&height=671",
-        }
+        map_info = self.map_info
 
         map_title = f"Map: {maps}"
         embed = discord.Embed(title=map_title, color=discord.Color.orange())
 
+        def locateImg(
+                selectedMap: str = map_info.get(maps, ''),
+                embedS = discord.Embed(color=discord.Color.orange())
+        ):
+            filter: [str] = [
+                'Vertigo_upper',
+                'Vertigo_lower',
+                'Nuke_upper',
+                'Nuke_lower'
+            ]
+
+            for keyword in filter:
+                if keyword == selectedMap:
+                    selectedMap = map_info.get(keyword, '')
+
+                    with open(selectedMap, 'rb') as f:
+                        file = discord.File(BytesIO(f.read()), filename=f'{keyword}.png')
+                        embedS.set_image(url=f'attachment://{keyword}.png')
+                        return [embedS, file]
+
+
+            with open(selectedMap, 'rb') as f:
+                file = discord.File(BytesIO(f.read()), filename=f'{maps.lower()}.png')
+                embedS.set_image(url=f'attachment://{maps.lower()}.png')
+                return [embedS, file]
+
+
+
         if maps == "Vertigo":
-            embed_upper = discord.Embed(title=map_title, description="(Upper)", color=discord.Color.orange())
-            embed_lower = discord.Embed(description="(Lower)", color=discord.Color.orange())
-            embed_upper.set_image(url=map_info["Vertigo_upper"])
-            embed_lower.set_image(url=map_info["Vertigo_lower"])
-            await ctx.respond(embed=embed_upper)
-            await ctx.send(embed=embed_lower)
+            selectedMapUpper: str = 'Vertigo_upper'
+            upper_stuff = locateImg(selectedMap=selectedMapUpper)
+            embedUpper = upper_stuff[0]
+            fileUpper = upper_stuff[1]
+            embedUpper.title = "Vertigo"
+            embedUpper.description = '(Upper)'
+
+            await ctx.respond(embed=embedUpper, file=fileUpper)
+
+            selectedMapLower: str = 'Vertigo_lower'
+            lower_stuff = locateImg(selectedMap=selectedMapLower)
+            embedLower = lower_stuff[0]
+            fileLower = lower_stuff[1]
+            embedLower.description = '(Lower)'
+
+            await ctx.send(embed=embedLower, file=fileLower)
+
+
         elif maps == "Nuke":
-            embed_upper = discord.Embed(title=map_title, description="(Upper)", color=discord.Color.orange())
-            embed_lower = discord.Embed(description="(Lower)", color=discord.Color.orange())
-            embed_upper.set_image(url=map_info["Nuke_upper"])
-            embed_lower.set_image(url=map_info["Nuke_lower"])
-            await ctx.respond(embed=embed_upper)
-            await ctx.send(embed=embed_lower)
+            if maps == "Nuke":
+                selectedMapUpper = 'Nuke_upper'
+                upper_stuff = locateImg(selectedMap=selectedMapUpper)
+                embedUpper = upper_stuff[0]
+                fileUpper = upper_stuff[1]
+                embedUpper.title = "Nuke"
+                embedUpper.description = '(Upper)'
+
+                await ctx.respond(embed=embedUpper, file=fileUpper)
+
+                selectedMapLower = 'Nuke_lower'
+                lower_stuff = locateImg(selectedMap=selectedMapLower)
+                embedLower = lower_stuff[0]
+                fileLower = lower_stuff[1]
+                embedLower.description = '(Lower)'
+
+                await ctx.send(embed=embedLower, file=fileLower)
+
         else:
-            embed.set_image(url=map_info.get(maps, ""))
-            if registerOperation: await ctx.respond(embed=embed)
+            out = locateImg(embedS=embed)
+            await ctx.respond(embed=out[0], file=out[1])
 
     @cs_callout.error
     async def give_cs_callout_error(self, ctx, error):
@@ -82,6 +135,7 @@ class cs_map(commands.Cog):
 
         else:
             embed.description = "An unexpected error occurred. Please try again later."
+            print(error)
 
         await ctx.respond(embed=embed, ephemeral=True, delete_after=15)
 
