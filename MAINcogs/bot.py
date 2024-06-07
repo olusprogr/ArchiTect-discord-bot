@@ -27,6 +27,7 @@ class Botinfo(commands.Cog):
             data = json.load(file)
             globalSettings = data["globalSetting"]
 
+        self.lineOfCode = globalSettings['linesOfCode']
         self.version = globalSettings["version"]
         self.owner = globalSettings["owner"]
         self.co_owner = globalSettings["co-owner"]
@@ -63,9 +64,9 @@ class Botinfo(commands.Cog):
             embed.add_field(name="Created: ", value="26. June 2023", inline=True)
             embed.add_field(name="Servers: ", value=len(self.bot.guilds).__str__())
             embed.add_field(name="Commands: ", value=len(self.bot.commands).__str__())
-            embed.add_field(name="Lines of code: ", value="3000")
+            embed.add_field(name="Lines of code: ", value=self.lineOfCode)
             embed.add_field(name="File size (DB included): ", value="145 MB")
-            embed.add_field(name="Bot Runtime: ", value=f"{botsOnRunTime()[1]} {botsOnRunTime()[0]}")
+            embed.add_field(name="Bot Runtime: ", value=f"{round(botsOnRunTime()[1], 2)} {botsOnRunTime()[0]}")
 
             await ctx.respond(embed=embed)
 

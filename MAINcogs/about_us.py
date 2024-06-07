@@ -7,8 +7,6 @@ from discord.commands import slash_command
 from database._databaseManager import *
 
 import json
-from PIL import Image
-from io import BytesIO
 
 
 class AboutUs(commands.Cog):
@@ -29,11 +27,6 @@ class AboutUs(commands.Cog):
         if registerOperation: await ctx.respond(embed=embed)
 
         await asyncio.sleep(3)
-
-
-
-
-
 
         for member in self.members:
             embedS: discord.Embed = discord.Embed(color=0xC87A80)
@@ -56,12 +49,6 @@ class AboutUs(commands.Cog):
             embedS.set_thumbnail(url=f'attachment://image.webp')
             
             await ctx.send(embed=embedS, file=file)
-        
-
-
-
-
-
         
     @about_us.error
     async def about_us_error(self, ctx, error):

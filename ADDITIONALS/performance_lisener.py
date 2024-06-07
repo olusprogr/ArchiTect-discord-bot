@@ -7,7 +7,7 @@ from database._databaseManager import *
 
 import json
 import asyncio
-import psutil
+from psutil import cpu_percent, virtual_memory
 import matplotlib.pyplot as plt
 from io import BytesIO
 
@@ -34,12 +34,12 @@ class PerformanceListener(commands.Cog):
     async def check_performance_continuously(self):
         counter = 1
         while True:
-            await asyncio.sleep(60)
-            cpu_usage = psutil.cpu_percent(interval=0.1)
+            await asyncio.sleep(1)
+            cpu_usage = cpu_percent(interval=0.1)
             self.y_cpu.append(cpu_usage)
             self.x.append(counter)
 
-            ram_info = psutil.virtual_memory()
+            ram_info = virtual_memory()
             ram_usage = ram_info.percent
             self.y_ram.append(ram_usage)
 

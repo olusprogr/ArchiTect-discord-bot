@@ -1,6 +1,6 @@
 import asyncio
 import sys
-import psutil
+from psutil import cpu_percent, virtual_memory
 import json
 
 import discord
@@ -15,6 +15,9 @@ with open('config/databases.json', 'r') as file:
 
 logDB = data["databases"]["savingUserOperations"]
 userDB = data["databases"]["preferredUser"]
+
+with open('config/globalSettings.json', 'r') as file:
+    data = json.load(file)
 
 
 class MyView(discord.ui.View):
@@ -125,15 +128,15 @@ class MyView(discord.ui.View):
     async def _6_button_callback(self, button, interaction):
         asw = self.get_asw_from_db(interaction)
         if asw:
-            cpu_usage = psutil.cpu_percent(interval=1)
+            cpu_usage = cpu_percent(interval=1)
 
-            ram_info = psutil.virtual_memory()
+            ram_info = virtual_memory()
             total_ram = round(ram_info.total / (1024 ** 3), 2)
             available_ram = round(ram_info.available / (1024 ** 3), 2)
             used_ram = round(ram_info.used / (1024 ** 3), 2)
 
             embed = discord.Embed(title="DEBUG INFORMATION")
-            embed.add_field(name="Host server name", value="```Kekshosting```")
+            embed.add_field(name="Host server name", value=f"```{data['host']}```")
             embed.add_field(name="Latency", value=f"```{round(self.bot.latency, 2)}s```")
             embed.add_field(name="RAM", value=f"```Total: {total_ram}\n"
                                               f"Available: {available_ram}\n"
