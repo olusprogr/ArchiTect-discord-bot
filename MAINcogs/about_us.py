@@ -19,7 +19,7 @@ class AboutUs(commands.Cog):
         self.members = data["members"]
         self.log_DB = Log(Database(logDB))
 
-    @slash_command(description="Greet a user of your choice")
+    @slash_command(description="See the information about the developers of the bot🖥️")
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def about_us(self, ctx):
         registerOperation = self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command))

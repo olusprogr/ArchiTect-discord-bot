@@ -42,7 +42,7 @@ class Steamcommand(commands.Cog):
 
     steam = SlashCommandGroup(name="steam", description="Steam group")
 
-    @steam.command(description="")
+    @steam.command(description="Search for a Steam user")
     @discord.default_permissions(manage_messages=True)
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def search_for_user(self, ctx, username: str):
@@ -67,7 +67,7 @@ class Steamcommand(commands.Cog):
 
         else: print("user not found")
 
-    @steam.command(description="")
+    @steam.command(description="Get the details of a Steam user")
     @discord.default_permissions(manage_messages=True)
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def get_user_details(self, ctx, userid: str):
@@ -88,7 +88,7 @@ class Steamcommand(commands.Cog):
 
         await ctx.respond(embed=embed)
 
-    @steam.command(description="")
+    @steam.command(description="Get the friend list of a Steam user")
     @discord.default_permissions(manage_messages=True)
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def get_user_friend_list(self, ctx, userid: str or int):

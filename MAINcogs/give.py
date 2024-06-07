@@ -190,7 +190,7 @@ class cs_map(commands.Cog):
 
 # -----------------------------------------------------------
 
-    @give.command()
+    @give.command(description="Paste a link of an image and the bot will send it in the chat")
     @commands.cooldown(1, 10, commands.BucketType.guild)
     async def img(self, ctx, url: str):
         await ctx.defer()

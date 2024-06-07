@@ -19,7 +19,7 @@ class LinkButtonView(View):
     def __init__(self):
         super().__init__()
         self.add_item(Button(label="Consider getting premium and get perks.", style=discord.ButtonStyle.link,
-                             url="https://olusprogr.github.io/architect-website-deployed/#/about-us"))
+                             url="https://architect-discord-bot.onrender.com"))
 
 
 class Help(commands.Cog):

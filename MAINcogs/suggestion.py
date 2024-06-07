@@ -20,7 +20,7 @@ class Suggest(commands.Cog):
         self.check = Administrator(Database(userDB))
         self.log_DB = Log(Database(logDB))
 
-    @slash_command(description="Suggest something in a thread")
+    @slash_command(description="Creates a public thread to discuss a suggestion in the current channel")
     @discord.default_permissions(create_public_threads=True)
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def suggest(self, ctx,

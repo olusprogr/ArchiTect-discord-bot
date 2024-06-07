@@ -50,7 +50,7 @@ class PerformanceListener(commands.Cog):
             self.y_ram = self.y_ram[-self.data_window:]
 
 
-    @slash_command()
+    @slash_command(description="Get the CPU usage of the bot")
     async def plot_cpu_command(self, ctx):
         await ctx.defer()
         self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
@@ -65,7 +65,7 @@ class PerformanceListener(commands.Cog):
         embed.set_image(url='attachment://cpu_performance_plot.png')
         await ctx.respond(embed=embed, file=file)
 
-    @slash_command()
+    @slash_command(description="Get the RAM usage of the bot")
     async def plot_ram_command(self, ctx):
         await ctx.defer()
         self.log_DB.log(str(ctx.guild), str(ctx.author), str(ctx.command), None)
