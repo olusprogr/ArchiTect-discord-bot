@@ -65,7 +65,7 @@ class cs_map(commands.Cog):
             for keyword in filter:
                 if keyword == selectedMap:
                     selectedMap = map_info.get(keyword, '')
-
+                    print(selectedMap)
                     with open(selectedMap, 'rb') as f:
                         file = discord.File(BytesIO(f.read()), filename=f'{keyword}.png')
                         embedS.set_image(url=f'attachment://{keyword}.png')
