@@ -83,9 +83,9 @@ async def on_ready():
     await channel.send(f"{getCurrentTime()}: {bot.user.mention} marked as running...")
 
     # Changing the bot's status and activity
-    await bot.change_presence(status=discord.Status.online,
-                              activity=discord.Activity(type=discord.ActivityType.listening,
-                                                        name=f" {len(bot.guilds)} server"))
+    # await bot.change_presence(status=discord.Status.online,
+                              # activity=discord.Activity(type=discord.ActivityType.listening,
+                                                        # name=f" {len(bot.guilds)} server"))
 
 
 # Loading the token from the .env file
